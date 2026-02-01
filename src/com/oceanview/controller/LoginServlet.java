@@ -2,9 +2,11 @@ package com.oceanview.controller;
 
 import com.oceanview.dao.UserDAO;
 import com.oceanview.model.User;
-import com.oceanview.util.PasswordUtil;
-
 import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.IOException;
+
+import javax.servlet.annotation.WebServlet; // 1. Add this import
 import javax.servlet.http.*;
 import java.io.IOException;
 
@@ -17,30 +19,26 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
-        // Debugging: See what is coming from the form
-        System.out.println("Login Attempt - Username: " + username);
-
-        UserDAO userDao = new UserDAO();
-        User user = userDao.getUserByUsername(username);
-
-        // Debugging: See if the user was found in the DB
-        if (user == null) {
-            System.out.println("Auth Failed: User not found in database.");
-        } else {
-            System.out.println("User found: " + user.getUsername());
-            System.out.println("Stored Password Hash/Value: " + user.getPassword());
+        // Basic Validation
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            req.setAttribute("error", "Please enter both username and password");
+            req.getRequestDispatcher("login.jsp").forward(req, resp);
+            return;
         }
 
-        // Logic check
-        if (user != null && PasswordUtil.verifyPassword(password, user.getPassword())) {
-            System.out.println("Login Success!");
+        UserDAO userDao = new UserDAO();
+        User user = userDao.validateUser(username, password);
+
+        if (user != null) {
+            // Success: Create session and store user data
             HttpSession session = req.getSession();
             session.setAttribute("loggedUser", user);
             session.setAttribute("role", user.getRole());
 
-            resp.sendRedirect("dashboard.jsp");
+            // Redirect to dashboard
+            resp.sendRedirect(req.getContextPath() + "/dashboard.jsp");
         } else {
-            System.out.println("Login Failed: Password mismatch or null user.");
+            // Failure: Back to login with error
             req.setAttribute("error", "Invalid username or password");
             req.getRequestDispatcher("login.jsp").forward(req, resp);
         }

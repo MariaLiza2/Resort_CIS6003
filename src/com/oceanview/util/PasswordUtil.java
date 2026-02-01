@@ -20,10 +20,9 @@ public class PasswordUtil {
         }
     }
     public static boolean verifyPassword(String plainPassword, String storedPassword) {
-        // If you are using plain text (not recommended for production)
-        return plainPassword.equals(storedPassword);
-
-        // If you are using BCrypt (recommended)
-        // return BCrypt.checkpw(plainPassword, storedPassword);
+        String hashedInput = hashPassword(plainPassword);
+        System.out.println("Hashed input: " + hashedInput);
+        return hashedInput.equals(storedPassword);
     }
+
 }

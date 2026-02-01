@@ -12,12 +12,16 @@ public class DBConnection {
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/oceanview_db",
-                        "root",
-                        ""
-                );
+
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+                String url =
+                        "jdbc:sqlserver://DESKTOP-F0G9G1H\\SQLEXPRESS:1433;" +
+                                "databaseName=oceanview_db;" +
+                                "integratedSecurity=true;" +
+                                "encrypt=false;";
+
+                connection = DriverManager.getConnection(url);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,10 +6,10 @@ import com.oceanview.util.PasswordUtil;
 
 public class AuthService {
 
-    private UserDAO userDAO = new UserDAO();
+    private UserDAO UserDAO = new UserDAO();
 
     public User login(String username, String password) {
         String hashed = PasswordUtil.hashPassword(password);
-        return userDAO.validateUser(username, hashed);
+        return UserDAO.validateUser(username, hashed);
     }
 }
