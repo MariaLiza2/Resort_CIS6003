@@ -1,16 +1,22 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.oceanview.model.User" %>
 <%
-    if(session.getAttribute("username") == null){
+    User user = (User) session.getAttribute("loggedUser");
+    if (user == null) {
         response.sendRedirect("login.jsp");
+        return;
     }
 %>
-<!DOCTYPE html>
+
 <html>
 <head>
     <title>Dashboard</title>
 </head>
 <body>
-<h2>Welcome, <%= session.getAttribute("username") %> 🎉</h2>
+
+<h2>Welcome, <%= user.getUsername() %></h2>
+<p>Role: <%= user.getRole() %></p>
+
 <a href="logout">Logout</a>
+
 </body>
 </html>
